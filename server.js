@@ -235,43 +235,43 @@ const userSchema = new mongoose.Schema({
 // Explicitly specify the collection name
 const User = mongoose.model("UserData", userSchema, "userDetails");
 
-app.post('/api/scrape', async (req, res) => {
-  const { url, companyName } = req.body;
+// app.post('/api/scrape', async (req, res) => {
+//   const { url, companyName } = req.body;
 
-  if (!url || !companyName) {
-    return res.status(400).json({ error: "URL and companyName are required" });
-  }
+//   if (!url || !companyName) {
+//     return res.status(400).json({ error: "URL and companyName are required" });
+//   }
 
-  const pythonProcess = spawn('python', ['./scraper.py', url]);
+//   const pythonProcess = spawn('python', ['./scraper.py', url]);
 
-  pythonProcess.stdout.on('data', async (data) => {
-    const links = JSON.parse(data.toString().replace(/'/g, '"')); // Parse output to JSON
+//   pythonProcess.stdout.on('data', async (data) => {
+//     const links = JSON.parse(data.toString().replace(/'/g, '"')); // Parse output to JSON
 
-    try {
-      // Find or create a user document by companyName and update the urls field
-      await User.findOneAndUpdate(
-        { companyName },
-        { $push: { urls: { $each: links } } },
-        { new: true, upsert: true }
-      );
-      res.status(200).json({ message: "URLs saved successfully", links });
-    } catch (error) {
-      console.error("Error saving URLs:", error);
-      res.status(500).json({ error: "Failed to save URLs" });
-    }
-  });
+//     try {
+//       // Find or create a user document by companyName and update the urls field
+//       await User.findOneAndUpdate(
+//         { companyName },
+//         { $push: { urls: { $each: links } } },
+//         { new: true, upsert: true }
+//       );
+//       res.status(200).json({ message: "URLs saved successfully", links });
+//     } catch (error) {
+//       console.error("Error saving URLs:", error);
+//       res.status(500).json({ error: "Failed to save URLs" });
+//     }
+//   });
 
-  pythonProcess.stderr.on('data', (data) => {
-    console.error(`stderr: ${data}`);
-    res.status(500).json({ error: "Failed to scrape URLs" });
-  });
+//   pythonProcess.stderr.on('data', (data) => {
+//     console.error(`stderr: ${data}`);
+//     res.status(500).json({ error: "Failed to scrape URLs" });
+//   });
 
-  pythonProcess.on('close', (code) => {
-    if (code !== 0) {
-      res.status(500).json({ error: "Python script failed" });
-    }
-  });
-});
+//   pythonProcess.on('close', (code) => {
+//     if (code !== 0) {
+//       res.status(500).json({ error: "Python script failed" });
+//     }
+//   });
+// });
 
 // User routes
 app.post("/api/users", async (req, res) => {
