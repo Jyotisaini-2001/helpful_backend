@@ -242,7 +242,7 @@ app.post('/api/scrape', async (req, res) => {
     return res.status(400).json({ error: "URL and companyName are required" });
   }
 
-  const pythonProcess = spawn('python', ['./scripts/scraper.py', url]);
+  const pythonProcess = spawn('python', ['./scraper.py', url]);
 
   pythonProcess.stdout.on('data', async (data) => {
     const links = JSON.parse(data.toString().replace(/'/g, '"')); // Parse output to JSON
